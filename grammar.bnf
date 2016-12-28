@@ -7,9 +7,9 @@ comment "/*" "*/" ;
 
 DEnum.     Def ::= "enum" TypeID "{" [SumType] "}" ;
 separator SumType "," ;
-EEmpty.    SumType ::= Id ;
-EProd.     SumType ::= Id "(" [TypeAnnotation] ")" ;
-separator TypeAnnotation "," ;
+EEmpty.    SumType ::= TypeID ;
+EProd.     SumType ::= TypeID "(" [TypeAnnotation] ")" ;
+separator nonempty TypeAnnotation "," ;
 
 DeclIdTyp. IdTyped ::= Id ":" TypeAnnotation ;
 separator  IdTyped "," ;
@@ -22,9 +22,30 @@ DMutInf.   Def ::= "let" "~" Id "=" Expr ;
 SWhile.   Stmt ::= "while(" Expr ")" "{" [Stmt] "}" ;
 
 
-FApp.    Expr ::= Id "(" [Expr] ")" ;
-IdExpr.  Expr ::= Id ;
+FApp.    Expr13 ::= Id "(" [Expr] ")" ;
+IdExpr.  Expr13 ::= Id ;
+
+EInt.    Expr13 ::= Integer ;
+Double.  Expr13 ::= Double ;
+True.    Expr13 ::= "true" ;
+EFalse.  Expr13 ::= "false" ;
+EApp.    Expr13 ::= Id "(" [Expr] ")" ;
+
+ETimes.  Expr12 ::= Expr12 "*"  Expr13 ;
+EDiv.    Expr12 ::= Expr12 "/"  Expr13 ;
+EPlus.   Expr11 ::= Expr11 "+"  Expr12 ;
+EMinus.  Expr11 ::= Expr11 "-"  Expr12 ;
+ELt.     Expr9  ::= Expr9  "<"  Expr10 ;
+EGt.     Expr9  ::= Expr9  ">"  Expr10 ;
+ELtEq.   Expr9  ::= Expr9  "<=" Expr10 ;
+EGtWq.   Expr9  ::= Expr9  ">=" Expr10 ;
+EEq.     Expr8  ::= Expr8  "==" Expr9 ;
+ENEq.    Expr8  ::= Expr8  "!=" Expr9 ;
+EAnd.    Expr4  ::= Expr4  "&&" Expr5 ;
+EOr.     Expr3  ::= Expr3  "||" Expr4 ;
+EAss.    Expr2  ::= Expr3 "=" Expr2 ;
 separator Expr "," ;
+coercions Expr 13 ;
 
 IfExpr.  Expr ::= "if" Expr "then" Expr "else" Expr ;
 
@@ -49,4 +70,4 @@ TRaw.    Type ::= RType ;
 TFun.    Type ::= FType ;
 
 token TypeID (upper (letter | digit | '_')*) ;
-token Id (letter (letter | digit | '_')*) ;
+token Id (lower (letter | digit | '_')*) ;
