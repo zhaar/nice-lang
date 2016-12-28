@@ -1,2 +1,52 @@
 
+PDefs.   Program ::= [Def] ;
+terminator Def "" ;
 
+comment "//" ;
+comment "/*" "*/" ;
+
+DEnum.     Def ::= "enum" TypeID "{" [SumType] "}" ;
+separator SumType "," ;
+EEmpty.    SumType ::= Id ;
+EProd.     SumType ::= Id "(" [TypeAnnotation] ")" ;
+separator TypeAnnotation "," ;
+
+DeclIdTyp. IdTyped ::= Id ":" TypeAnnotation ;
+separator  IdTyped "," ;
+DFunStmt.  Def ::= "let" Id "(" [IdTyped] ")" "->" TypeAnnotation "{" [Stmt] "}" ;
+DFunExpr.  Def ::= "let" Id "(" [IdTyped] ")" "->" TypeAnnotation Expr ;
+DImmutLet. Def ::= "let" IdTyped "=" Expr ;
+DimmutInf. Def ::= "let" Id "=" Expr ;
+DMutLet.   Def ::= "let" "~" IdTyped "=" Expr ;
+DMutInf.   Def ::= "let" "~" Id "=" Expr ;
+SWhile.   Stmt ::= "while(" Expr ")" "{" [Stmt] "}" ;
+
+
+FApp.    Expr ::= Id "(" [Expr] ")" ;
+IdExpr.  Expr ::= Id ;
+separator Expr "," ;
+
+IfExpr.  Expr ::= "if" Expr "then" Expr "else" Expr ;
+
+terminator Stmt "" ;
+
+
+ImmType. TypeAnnotation ::= Type ;
+PtrType. TypeAnnotation ::= ">" TypeAnnotation ;
+MutPtr.  TypeAnnotation ::= "~>" TypeAnnotation ;
+MutAll.  TypeAnnotation ::= "~>~" TypeAnnotation ;
+
+Tbool.   RType ::= "bool" ;
+Tdouble. RType ::= "double" ;
+Tint.    RType ::= "int" ;
+Tvoid.   RType ::= "void" ;
+Tident.  RType ::= TypeID ;
+Tfun1.   FType ::= RType "->" Type ;
+Tfun2.   FType ::= "(" Type ")" "->" Type ;
+
+
+TRaw.    Type ::= RType ;
+TFun.    Type ::= FType ;
+
+token TypeID (upper (letter | digit | '_')*) ;
+token Id (letter (letter | digit | '_')*) ;
